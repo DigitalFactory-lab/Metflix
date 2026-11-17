@@ -127,7 +127,8 @@ button:disabled{opacity:.4;cursor:default}
 .table{display:flex;flex-direction:column;gap:18px;width:400px}
 .tname{font-size:32px;font-weight:700;color:var(--navy)}
 .seats{display:flex;gap:12px;flex-wrap:wrap}
-.seat{width:48px;height:48px;border-radius:50%;background:var(--violet)}
+.seat{display:block;width:48px;height:48px;color:var(--violet);flex:0 0 auto}
+.seat svg{display:block;width:100%;height:100%;fill:currentColor}
 .tcount{font-size:22px;color:var(--muted)}
 
 /* Scénaristes */
@@ -371,7 +372,7 @@ button:focus-visible,input:focus-visible { outline-color:#ff6a6f; }
 .seg button[aria-pressed="true"] { background:#e50914; color:#fff; border-color:#e50914; }
 .gsum { color:#ff555f; }
 .table { border-top:3px solid #d70c1a; }
-.seat { background:#dd1827; }
+.seat { color:#dd1827; }
 .tcount { color:#bbc0ca; }
 .say { color:#e9e9ec; background:#1a1c24; border:1px solid #8c3c46; border-left:4px solid #eb1727; border-radius:9px; }
 .saylbl { color:#ff555e; }
@@ -967,7 +968,7 @@ button:focus-visible,input:focus-visible { outline-color:#ff6a6f; }
       var card = document.createElement('div'); card.className = 'card table';
       var name = document.createElement('span'); name.className = 'tname'; name.textContent = 'Table ' + 'ABC'.charAt(i);
       var seats = document.createElement('span'); seats.className = 'seats'; seats.setAttribute('aria-hidden', 'true');
-      for (var k = 0; k < n; k++) { var d = document.createElement('span'); d.className = 'seat'; seats.appendChild(d); }
+      for (var k = 0; k < n; k++) { var d = document.createElement('span'); d.className = 'seat'; d.innerHTML = '<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><circle cx="24" cy="13" r="9"/><path d="M7 44v-6c0-8 7-14 17-14s17 6 17 14v6z"/></svg>'; seats.appendChild(d); }
       var c = document.createElement('span'); c.className = 'tcount'; c.textContent = n + ' scénaristes';
       card.appendChild(name); card.appendChild(seats); card.appendChild(c); tables.appendChild(card);
     });
