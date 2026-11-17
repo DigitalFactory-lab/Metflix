@@ -1,6 +1,7 @@
 # METFLIX · Digital Factory
 
-- Présentation : https://digitalfactory-lab.github.io/Metflix/presentation/
+- Site / présentation directement : https://digitalfactory-lab.github.io/Metflix/
+- Accès historique conservé : https://digitalfactory-lab.github.io/Metflix/presentation/
 - Application des groupes : https://digitalfactory-lab.github.io/Metflix/appli/
 - Espace formateur : https://digitalfactory-lab.github.io/Metflix/appli/formateur.html
 
@@ -31,3 +32,9 @@ Internet est nécessaire pour le transfert, mais aucun compte de messagerie sur 
 `transfert/worker.mjs` : API Cloudflare Worker. `transfert/schema.sql` : schéma D1. Le Worker n’est PAS déployé automatiquement par GitHub Pages ; le publier séparément avec les métadonnées conservées dans `transfert/deployment.json`, après toute modification serveur. Ne jamais mettre de clé Cloudflare dans ce dépôt.
 
 Validation : `node tests/transfert-live.mjs` crée une session de test temporaire puis la supprime. Ce test vérifie notamment les droits, le remplacement et la limite de 12 dépôts simultanés. Ne pas le lancer pendant une séance sans nécessité (limite de création anti-abus : 8 sessions/heure/IP).
+
+## Tirages des épisodes
+
+Le premier tirage fournit deux propositions. Chaque participant dispose ensuite de deux échanges maximum. Le compteur est personnel, conservé dans la fiche locale lors des changements de héros, des changements d’étape et des rechargements. Après deux échanges, le bouton est désactivé et la fonction de tirage refuse aussi une tentative supplémentaire. Un échange remplace les deux propositions et efface la sélection précédente. Les propositions du tirage immédiatement précédent sont exclues du nouveau tirage.
+
+Validation locale de cette règle : `node --test tests/episodes.test.mjs`.
