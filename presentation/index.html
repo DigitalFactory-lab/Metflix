@@ -547,7 +547,7 @@ button:focus-visible,input:focus-visible { outline-color:#ff6a6f; }
 </section>
 
 <section data-scene="workshop" class="screen app-join" data-chapter="scenaristes" data-label="Épisode 2 · Rejoindre l’appli" aria-label="Rejoindre l’application" hidden>
-<div class="join-copy"><p class="kicker">Épisode 2 · La salle des scénaristes</p><h2 class="h1">Vos cartes sont ici.</h2><p class="lead">Un iPad par groupe.<br>Scannez pour entrer dans votre studio.</p><ol class="join-steps"><li>Ouvrez l’appli sur un seul iPad par groupe.</li><li>Inscrivez vos prénoms ou surnoms.</li><li>Choisissez le premier héros, puis tirez deux cartes.</li></ol><p class="note">Cartes, consignes et chronomètres vous accompagnent.<br>Chaque groupe avance à son rythme.</p></div>
+<div class="join-copy"><p class="kicker">Épisode 2 · La salle des scénaristes</p><h2 class="h1">Vos cartes sont ici.</h2><p class="lead">Un iPad par groupe.<br>Scannez pour entrer dans votre studio.</p><ol class="join-steps"><li>Ouvrez l’appli sur un seul iPad par groupe.</li><li>Inscrivez vos prénoms ou surnoms.</li><li>Choisissez le premier héros, puis tirez deux cartes.</li></ol><p class="note">Cartes, consignes et chronomètres vous accompagnent.<br>Chaque groupe avance à son rythme.</p><p class="note"><a href="../appli/formateur.html" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline">Formateur : ouvrir la session et récupérer les textes ↗</a></p><p class="note" id="session-caption"></p></div>
 <a class="join-qr" href="https://digitalfactory-lab.github.io/Metflix/appli/" target="_blank" rel="noopener"><img src="assets/rejoindre-appli.svg" alt="QR code pour ouvrir l’application METFLIX"><strong>Ouvrir l’appli ↗</strong><span>digitalfactory-lab.github.io/Metflix/appli/</span></a>
 </section>
 <section data-scene="underwater" class="screen dark center" data-chapter="scenaristes" data-label="Épisode 2 · La consigne" aria-label="La consigne des scénaristes" hidden>
@@ -1146,4 +1146,6 @@ button:focus-visible,input:focus-visible { outline-color:#ff6a6f; }
 </script>
 
 
-</body></html>
+<script src="../appli/vendor/qrcode.js"></script><script>
+(function(){var link=document.querySelector('.join-qr');if(!link)return;var original=link.innerHTML,base=link.href;function sync(){var s;try{s=JSON.parse(localStorage.getItem('metflix-host-v1'));}catch(e){}var caption=document.getElementById('session-caption');if(s&&/^[A-F0-9]{12}$/.test(s.code)&&s.expiresAt>Date.now()){var url=new URL(base);url.searchParams.set('session',s.code);var q=qrcode(0,'M');q.addData(url.href);q.make();link.href=url.href;link.innerHTML='<div style="width:350px;height:350px;background:white;padding:12px;border-radius:12px">'+q.createSvgTag({scalable:true,margin:4})+'</div><strong>Rejoindre la session ↗</strong><span>'+s.code+'</span>';if(caption)caption.textContent='Session ouverte · Les iPad pourront transmettre les textes au PC.';}else{link.href=base;link.innerHTML=original;if(caption)caption.textContent='Ouvrez la session formateur : son QR apparaîtra ici automatiquement.';}}sync();window.addEventListener('focus',sync);window.addEventListener('storage',sync);setInterval(sync,30000);})();
+</script></body></html>

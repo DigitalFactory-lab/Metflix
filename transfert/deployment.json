@@ -1,0 +1,37 @@
+{
+  "script_name": "metflix-transferts",
+  "database_name": "metflix-transferts",
+  "account_id": "63cd977179de85deb84cf824f651b573",
+  "metadata": {
+    "main_module": "worker.mjs",
+    "compatibility_date": "2026-11-17",
+    "bindings": [
+      {
+        "type": "d1",
+        "name": "DB",
+        "id": "ef60c261-2f99-4356-afba-8f84d35b7bfc"
+      }
+    ],
+    "placement": {
+      "mode": "smart"
+    },
+    "observability": {
+      "enabled": true,
+      "redact_query_string": true,
+      "logs": {
+        "enabled": true,
+        "invocation_logs": false,
+        "head_sampling_rate": 1
+      },
+      "traces": {
+        "enabled": true,
+        "head_sampling_rate": 0.01
+      }
+    }
+  },
+  "schedules": [
+    {
+      "cron": "*/30 * * * *"
+    }
+  ]
+}
