@@ -1,0 +1,95 @@
+/* Un décor par écran, sans répétition sur deux écrans consécutifs. */
+.screen[data-scene="space"] { --scene: url(space.webp); }
+.screen[data-scene="horror"] { --scene: url(horror.webp); }
+.screen[data-scene="future"] { --scene: url(future.webp); }
+.screen[data-scene="underwater"] { --scene: url(underwater.webp); }
+
+.screen,
+.screen.dark:not(.hero),
+.screen.credits {
+  background-image: linear-gradient(90deg,rgba(5,9,15,.93) 0%,rgba(5,9,15,.77) 42%,rgba(5,9,15,.42) 100%),var(--scene);
+  background-color:#080c12;
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+.screen:not(.hero):not(.credits)::before { display:none; }
+.screen.dark.center {
+  background-image:linear-gradient(90deg,rgba(5,9,15,.87) 0%,rgba(5,9,15,.65) 54%,rgba(5,9,15,.22) 100%),var(--scene);
+}
+.screen.hero {
+  background-image:linear-gradient(90deg,rgba(5,9,15,.88) 0%,rgba(5,9,15,.65) 40%,rgba(5,9,15,.08) 100%),linear-gradient(0deg,rgba(5,9,15,.78),transparent 48%),var(--scene);
+  background-size:cover;
+  background-position:center;
+  gap:24px;
+}
+.hero .wordmark { align-items:flex-start; gap:32px; }
+.story-title {
+  margin:0;
+  color:#fff;
+  font-family:var(--font);
+  font-size:96px;
+  font-weight:700;
+  line-height:1.04;
+  letter-spacing:-.055em;
+  text-shadow:0 4px 36px rgba(0,0,0,.36);
+}
+.story-title span { color:#ff3541; }
+.hero .season { margin-top:14px; }
+.hero .lead.big { max-width:680px; }
+.screen .kicker { color:#ff6870; }
+.screen .lead,
+.screen .note,
+.screen .quote,
+.screen .scalelegend { text-shadow:0 2px 12px rgba(0,0,0,.8); }
+.screen .note,
+.screen .lead.small,
+.screen .scalelegend { color:#d3d7e0; }
+.screen .card { background:linear-gradient(145deg,rgba(23,28,37,.95),rgba(13,19,28,.9)); }
+.screen .checklist li { background:rgba(18,24,34,.94); }
+.screen.credits { background-image:linear-gradient(rgba(5,9,15,.75),rgba(5,9,15,.91)),var(--scene); }
+
+@media (prefers-reduced-motion: reduce) {
+  .screen { animation:none; }
+}
+
+/* Accueil : travelling horizontal automatique, contenu fixe. */
+.screen.hero { background-image:none; overflow:hidden; justify-content:flex-start; padding:38px 80px; gap:16px; }
+.hero .story-title { font-size:82px; }
+.hero .lead.big { font-size:30px; max-width:720px; }
+.hero-scene { position:absolute; inset:0; z-index:-1; pointer-events:none; }
+.hero-panorama { position:absolute; inset:-35px -125px; background:url(station-hero.webp) center/cover no-repeat; animation:station-travelling 24s linear infinite alternate; will-change:transform; }
+.hero-scene::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,rgba(5,9,15,.64),rgba(5,9,15,.26) 46%,rgba(5,9,15,.02)),linear-gradient(0deg,rgba(5,9,15,.86),transparent 55%); }
+@keyframes station-travelling { from { transform:translateX(-110px); } to { transform:translateX(110px); } }
+.screen[hidden] .hero-panorama { animation-play-state:paused; }
+.hero .eplist { position:absolute; bottom:28px; left:80px; right:80px; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; margin:0; padding:0; }
+.hero .eplist li { min-width:0; padding:0; border:0; background:none; box-shadow:none; list-style:none; }
+.episode-card { display:block; position:relative; width:100%; aspect-ratio:16/9; padding:0; overflow:hidden; border:1px solid rgba(255,255,255,.3); border-radius:7px; color:white; text-align:left; background:#15171b; font-family:inherit; cursor:pointer; box-shadow:0 10px 25px #0007; transition:transform .2s,border-color .2s; }
+.episode-image { position:absolute; inset:0; background-image:url(episodes-cinema.webp); background-size:200% 200%; background-repeat:no-repeat; }
+.episode-1 .episode-image { background-position:0 0; }
+.episode-2 .episode-image { background-position:100% 0; }
+.episode-3 .episode-image { background-position:0 100%; }
+.episode-4 .episode-image { background-position:100% 100%; }
+.episode-caption { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:16px; gap:6px; background:linear-gradient(transparent 32%,rgba(0,0,0,.92)); }
+.hero .epn { color:#ff636c; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; }
+.episode-title { font-size:23px; font-weight:700; line-height:1.15; letter-spacing:-.025em; }
+.episode-card:hover,.episode-card:focus-visible { transform:translateY(-5px) scale(1.015); border-color:white; }
+@media(prefers-reduced-motion:reduce) { .hero-panorama { animation:none; transform:none; } .episode-card { transition:none; } }
+
+.screen[data-scene="workshop"] { --scene: url(workshop.webp); }
+.screen[data-scene="theatre"] { --scene: url(theatre.webp); }
+.screen[data-scene="station"] { --scene: url(station-hero.webp); }
+
+@font-face {font-family:MetflixBrand;src:url(regular.ttf);font-weight:400;}
+@font-face {font-family:MetflixBrand;src:url(bold.ttf);font-weight:700;}
+.brand {display:block;min-width:204px;font-family:MetflixBrand,system-ui;font-weight:700;letter-spacing:-2px;font-size:29px;text-decoration:none;color:#ff2946;line-height:1;}
+.brand::before {display:none;}
+.brand span {display:block;font-size:9px;letter-spacing:2px;color:#aaaec0;margin-top:8px;}
+.screen.app-join {display:grid;grid-template-columns:1fr 410px;gap:65px;align-items:center;}
+.join-copy .h1 {font-size:64px;}
+.join-copy .lead {font-size:32px;}
+.join-steps {padding-left:32px;font-size:25px;line-height:1.7;}
+.join-qr {display:flex;flex-direction:column;align-items:center;gap:18px;background:#fff;padding:26px;border-radius:24px;color:#14151b;text-align:center;text-decoration:none;}
+.join-qr img {display:block;width:350px;height:350px;}
+.join-qr strong {font-size:27px;}
+.join-qr span {font-size:13px;}

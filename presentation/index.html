@@ -1,0 +1,1149 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Plateau Metflix</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout : un écran de plateau 16:9 encadré, bandeau des épisodes en haut, une consigne et un outil au centre, la régie en bas */
+:root{
+  --navy:#2f3a48; --blue:#5b60a8; --violet:#8c4292;
+  --ground:#f4f5f7; --card:#ffffff; --line:#e0e0e0; --ink:#333333; --muted:#555b66;
+  --on-dark:#ffffff; --on-dark-soft:#d5d8ea;
+  --ok:#2e7d32; --warn:#b45309;
+  --grad:linear-gradient(135deg,#2f3a48 0%,#5b60a8 62%,#8c4292 100%);
+  --font:'Poppins','Segoe UI',Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--navy);color:var(--ink);font-family:var(--font);font-size:16px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:16px;overflow:hidden}
+svg{flex:0 0 auto}
+.viewport{height:100%;display:flex;align-items:center;justify-content:center}
+.frame{position:relative;flex:0 0 auto}
+.stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;display:grid;grid-template-rows:72px 1fr 72px;background:var(--ground);border-radius:12px;overflow:hidden;box-shadow:0 12px 48px rgba(10,14,24,.45)}
+
+/* Bandeau des épisodes */
+.top{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 28px 0 40px;background:var(--navy);color:var(--on-dark)}
+.brand{display:flex;align-items:baseline;gap:12px;font-weight:700;font-size:26px;letter-spacing:.01em}
+.brand small{font-size:14px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--on-dark-soft)}
+.chapters{display:flex;gap:4px}
+.chapters button{font:inherit;font-size:16px;font-weight:500;color:var(--on-dark-soft);background:transparent;border:0;border-radius:10px;padding:10px 14px;cursor:pointer}
+.chapters button:hover{color:var(--on-dark)}
+.chapters button[aria-current="true"]{color:var(--on-dark);background:rgba(255,255,255,.10);box-shadow:inset 0 -3px 0 var(--violet)}
+
+/* Écrans */
+.screens{position:relative;overflow:hidden}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;gap:24px;padding:56px 96px;background:var(--ground);color:var(--ink);animation:enter .35s ease-out}
+@keyframes enter{from{opacity:.35;transform:translateY(10px)}to{opacity:1;transform:none}}
+.screen.dark{background:var(--grad);color:var(--on-dark)}
+.screen.center{justify-content:center}
+.kicker{margin:0;display:flex;align-items:center;gap:14px;font-size:19px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+.dark .kicker{color:var(--on-dark-soft)}
+.h1{margin:0;font-size:58px;line-height:1.12;font-weight:700;color:var(--navy);letter-spacing:-.01em;text-wrap:balance}
+.h1.q{font-size:50px;max-width:24em}
+.dark .h1{color:var(--on-dark)}
+.lead{margin:0;font-size:30px;line-height:1.42;max-width:34em;text-wrap:pretty}
+.lead.small{font-size:24px;color:var(--muted)}
+.lead.big{font-size:38px;line-height:1.32;max-width:27em}
+.dark .lead{color:var(--on-dark)}
+.quote{margin:0;font-size:60px;line-height:1.2;font-weight:700;max-width:22em;text-wrap:balance}
+.quote.ink{color:var(--navy)}
+.note{margin:0;font-size:24px;line-height:1.45;color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 32px}
+
+/* Éléments communs */
+.tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 11px;border-radius:999px;color:var(--on-dark);font-size:16px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.tag svg{width:18px;height:18px}
+.tag.ep{background:var(--blue)}.tag.sp{background:var(--violet)}.tag.me{background:var(--navy)}
+.num{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;background:var(--blue);color:var(--on-dark);font-size:24px;font-weight:700;line-height:1}
+.num.sm{width:40px;height:40px;font-size:19px}
+.num.lg{width:76px;height:76px;font-size:36px}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:22px}
+.steps li{display:flex;align-items:flex-start;gap:20px;font-size:30px;line-height:1.38}
+.steps li>span:last-child{padding-top:3px;text-wrap:pretty}
+.split{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:56px;align-items:start;flex:1 1 auto;min-height:0}
+.split.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.col{display:flex;flex-direction:column;gap:26px;min-width:0}
+.btn{font:inherit;font-size:22px;font-weight:600;line-height:1;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:58px;padding:0 26px;border-radius:14px;border:2px solid var(--blue);background:var(--blue);color:var(--on-dark);cursor:pointer}
+.btn:hover{filter:brightness(.92)}
+.btn.ghost{background:var(--card);color:var(--blue)}
+.btn.ghost:hover{filter:none;background:var(--ground)}
+.btn.sm{min-height:46px;font-size:18px;padding:0 16px}
+.btn.on-dark{background:transparent;border-color:rgba(255,255,255,.6);color:var(--on-dark)}
+.btn.on-dark:hover{filter:none;background:rgba(255,255,255,.08)}
+.btn.warn{background:var(--warn);border-color:var(--warn);color:#ffffff}
+.btn svg{width:22px;height:22px}
+button:focus-visible,input:focus-visible{outline:4px solid var(--violet);outline-offset:3px}
+.top button:focus-visible,.bottom button:focus-visible,.dark button:focus-visible,.credits button:focus-visible,.blackout button:focus-visible{outline-color:var(--on-dark)}
+button:disabled{opacity:.4;cursor:default}
+.boardtitle{display:inline-flex;align-items:center;gap:10px;font-size:20px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--violet)}
+.boardtitle svg{width:24px;height:24px}
+.addform{display:flex;gap:10px}
+.addform input{font:inherit;font-size:22px;min-height:58px;width:400px;max-width:100%;padding:0 18px;border:2px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink)}
+.addform input::placeholder{color:#6b7180}
+.empty{margin:0;font-size:22px;line-height:1.45;color:var(--muted)}
+
+/* Ouverture */
+.hero{justify-content:center;gap:30px}
+.wordmark{display:flex;align-items:center;gap:30px}
+.wm{font-size:168px;line-height:.95;font-weight:700;letter-spacing:-.03em}
+.season{font-size:24px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;border:2px solid var(--on-dark);border-radius:999px;padding:10px 22px}
+.eplist{list-style:none;margin:14px 0 0;padding:0;display:flex;gap:16px;flex-wrap:wrap}
+.eplist li{display:flex;flex-direction:column;gap:4px;padding:18px 24px;border-radius:16px;background:rgba(255,255,255,.12);font-size:26px;font-weight:600;min-width:250px}
+.epn{font-size:15px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--on-dark-soft)}
+.rules{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+.rule{display:flex;flex-direction:column;gap:24px;padding:36px 32px}
+.rule strong{display:block;font-size:36px;line-height:1.2;color:var(--navy)}
+.rule .sub{display:block;margin-top:12px;font-size:24px;line-height:1.45;color:var(--ink)}
+.lead.wide{max-width:none}
+.goals{margin-top:0}
+.goals .rule{gap:16px;padding:26px 32px}
+.goals .ico{width:60px;height:60px}
+.goals .ico svg{width:32px;height:32px}
+.duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;margin-top:6px}
+.feature{display:flex;flex-direction:column;gap:16px;padding:36px}
+.ico{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:72px;height:72px;border-radius:50%;background:var(--ground);color:var(--violet)}
+.ico svg{width:38px;height:38px}
+.feature strong{font-size:38px;line-height:1.2;color:var(--navy)}
+.feature .sub{font-size:26px;line-height:1.45}
+
+/* Casting */
+.board{display:flex;flex-direction:column;gap:18px;flex:1 1 auto;min-height:0}
+.boardhead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.chips{display:flex;flex-wrap:wrap;gap:14px;align-content:flex-start;overflow:auto;min-height:0}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 6px 6px 22px;border-radius:999px;background:var(--card);border:2px solid var(--violet);color:var(--navy);font-size:28px;font-weight:600}
+.chip button{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;border:0;background:var(--ground);color:var(--navy);cursor:pointer;font:inherit;font-size:24px;line-height:1}
+
+/* Groupes */
+.grouprow{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.lbl{font-size:26px;font-weight:600;color:var(--navy)}
+.seg{display:flex;gap:10px;flex-wrap:wrap}
+.seg button{font:inherit;font-size:26px;font-weight:700;width:68px;height:68px;border-radius:16px;border:2px solid var(--blue);background:var(--card);color:var(--blue);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--blue);color:var(--on-dark)}
+.gsum{font-size:26px;font-weight:600;color:var(--violet)}
+.tables{display:flex;flex-wrap:wrap;gap:28px}
+.table{display:flex;flex-direction:column;gap:18px;width:400px}
+.tname{font-size:32px;font-weight:700;color:var(--navy)}
+.seats{display:flex;gap:12px;flex-wrap:wrap}
+.seat{width:48px;height:48px;border-radius:50%;background:var(--violet)}
+.tcount{font-size:22px;color:var(--muted)}
+
+/* Scénaristes */
+.say{margin:0;font-size:28px;line-height:1.6;font-weight:500;color:var(--navy);background:var(--card);border:2px dashed var(--violet);border-radius:16px;padding:16px 24px 18px;text-wrap:pretty}
+.saylbl{display:block;margin-bottom:4px;font-size:16px;line-height:1.4;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--violet)}
+.split .h1{font-size:44px}
+.split .steps li{font-size:28px}
+.blank{display:inline-block;width:110px;height:2px;background:var(--navy);vertical-align:middle}
+.blank.wide{width:200px}
+.timer{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding:34px 32px}
+.timerlbl{display:inline-flex;align-items:center;gap:10px;font-size:20px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--blue)}
+.timerlbl svg{width:26px;height:26px}
+.clock{font-size:148px;line-height:1;font-weight:700;font-variant-numeric:tabular-nums;color:var(--navy);letter-spacing:-.02em}
+.timerstate{font-size:22px;font-weight:600;color:var(--muted);min-height:32px}
+.timer.is-done .clock,.timer.is-done .timerstate{color:var(--warn)}
+.timerbtns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.ideas{display:flex;flex-direction:column;gap:20px}
+.ideaslbl{font-size:20px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--navy)}
+.ideachips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:12px}
+.ideachips li{font-size:28px;font-weight:600;color:var(--navy);padding:10px 22px;border-radius:999px;background:var(--ground);border:2px solid var(--line)}
+.checklist{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.checklist li{display:flex;gap:18px;align-items:flex-start;font-size:30px;line-height:1.35;color:var(--navy);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 28px}
+.checklist svg{width:40px;height:40px;color:var(--violet)}
+
+/* Bande-annonce */
+.titlerow{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.pill{font-size:22px;font-weight:600;color:var(--violet);border:2px solid var(--violet);border-radius:999px;padding:6px 18px}
+.tpl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.tpl li{display:flex;align-items:flex-start;gap:16px}
+.tpl .num{margin-top:2px}
+.row{flex:1 1 auto;display:flex;flex-wrap:wrap;align-items:flex-start;column-gap:14px;row-gap:2px;min-width:0}
+.w{font-size:28px;line-height:44px;font-weight:500;color:var(--navy);white-space:nowrap}
+.bk{display:flex;flex-direction:column;flex:1 1 220px;min-width:220px}
+.bk.s{flex:0 0 220px}
+.bl{height:44px;border-bottom:2px solid var(--blue)}
+.bh{font-size:17px;line-height:22px;color:var(--muted)}
+.example{list-style:none;margin:0;display:flex;flex-direction:column;gap:14px;padding:32px 36px}
+.example li{display:flex;gap:18px;align-items:flex-start;font-size:30px;line-height:1.42;color:var(--navy)}
+.example li>span:last-child{padding-top:1px}
+.zones{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px}
+.zones li{display:flex;align-items:center;gap:16px;font-size:26px;line-height:1.35}
+.zdot{flex:0 0 auto;width:22px;height:22px;border-radius:50%}
+.z1{background:var(--blue)}.z2{background:var(--ok)}.z3{background:var(--warn)}
+.track{position:relative;width:100%;height:22px;border-radius:999px;background:var(--ground);border:1px solid var(--line);margin:4px 0 30px}
+.track .zone{position:absolute;left:50%;width:25%;top:0;bottom:0;background:rgba(46,125,50,.18)}
+.track .fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:999px;background:var(--blue)}
+.track .tick{position:absolute;top:28px;font-size:16px;color:var(--muted);transform:translateX(-50%)}
+.t30{left:50%}.t45{left:75%}
+#sw.ok .clock,#sw.ok .timerstate{color:var(--ok)}
+#sw.ok .fill{background:var(--ok)}
+#sw.over .clock,#sw.over .timerstate{color:var(--warn)}
+#sw.over .fill{background:var(--warn)}
+.bigquote{margin:0;font-size:46px;line-height:1.4;font-weight:600;color:var(--navy);max-width:28em;padding:40px 48px}
+.onair{display:flex;flex-direction:column;align-items:flex-start;gap:16px;border:2px solid var(--violet)}
+.onairlbl{display:inline-flex;align-items:center;gap:10px;font-size:18px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--on-dark);background:var(--violet);padding:7px 16px;border-radius:999px}
+.onairlbl svg{width:22px;height:22px}
+.onairname{font-size:80px;line-height:1.05;font-weight:700;color:var(--navy);overflow-wrap:anywhere}
+.nextlbl{font-size:26px;color:var(--muted)}
+.nextlbl strong{color:var(--navy)}
+.queue{display:flex;flex-direction:column;gap:16px}
+.qlist{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;max-height:300px;overflow:auto}
+.qlist li{display:inline-flex;align-items:center;gap:8px;font-size:22px;font-weight:600;padding:5px 5px 5px 16px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--navy)}
+.qlist li.done{color:var(--muted);background:var(--ground)}
+.qlist li.current{border-color:var(--violet);background:var(--violet);color:var(--on-dark)}
+.qn{font-size:16px;font-weight:700}
+.qlist button{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:0;border-radius:50%;background:rgba(0,0,0,.07);color:inherit;cursor:pointer;font:inherit;font-size:20px;line-height:1}
+.qlist li.current button{background:rgba(255,255,255,.2)}
+
+/* Avant-première */
+.scale{display:flex;gap:12px;flex-wrap:wrap}
+.scale span{width:84px;height:72px;display:flex;align-items:center;justify-content:center;border:2px solid var(--navy);border-radius:14px;font-size:30px;font-weight:700;color:var(--navy);background:var(--card)}
+.scalelegend{margin:0;font-size:22px;color:var(--muted)}
+.info{display:flex;gap:24px;align-items:flex-start;font-size:26px;line-height:1.45;max-width:1220px}
+.info strong{color:var(--navy)}
+.center .ico{width:100px;height:100px;background:rgba(255,255,255,.14);color:var(--on-dark)}
+.center .ico svg{width:54px;height:54px}
+.question{margin:0;font-size:46px;line-height:1.25;font-weight:700;color:var(--navy);text-wrap:balance}
+.reveal p{margin:0;font-size:26px;line-height:1.45}
+.reveal .src{margin-top:10px;font-size:18px;color:var(--muted)}
+.votes{display:flex;flex-direction:column;gap:22px}
+.counter{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.clbl{font-size:24px;font-weight:600;color:var(--navy)}
+.cctl{display:flex;align-items:center;gap:12px}
+.cbtn{width:58px;height:58px;border-radius:14px;border:2px solid var(--blue);background:var(--card);color:var(--blue);font:inherit;font-size:30px;font-weight:700;line-height:1;cursor:pointer}
+.cval{min-width:64px;text-align:center;font-size:44px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--navy)}
+.vbar{height:22px;border-radius:999px;background:var(--line);overflow:hidden}
+.vfill{display:block;height:100%;width:0;background:var(--violet);transition:width .3s}
+.vsum{margin:0;font-size:22px;line-height:1.4;color:var(--muted)}
+
+/* Générique */
+.screen.credits{background:var(--navy);color:var(--on-dark);padding:0}
+.roll-wrap{position:absolute;left:0;right:0;top:0;bottom:104px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent 0,#000 12%,#000 88%,transparent 100%);mask-image:linear-gradient(transparent 0,#000 12%,#000 88%,transparent 100%)}
+.roll{position:absolute;left:0;right:0;top:100%;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;animation:roll 34s linear -5s infinite}
+@keyframes roll{to{transform:translateY(calc(-100% - 700px))}}
+.c-title{margin:0;font-size:110px;line-height:1;font-weight:700;letter-spacing:-.02em}
+.c-season{margin:6px 0 40px;font-size:24px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--on-dark-soft)}
+.c-role{margin:40px 0 4px;font-size:22px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--on-dark-soft)}
+.c-name{margin:0;font-size:44px;font-weight:600}
+.c-end{margin:70px 0 0;font-size:40px;font-weight:700}
+.creditbar{position:absolute;left:0;right:0;bottom:0;height:104px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:0 40px}
+.wipe-confirm{display:flex;align-items:center;gap:12px;font-size:20px}
+.wipe-done{font-size:20px;color:var(--on-dark-soft)}
+
+/* Régie */
+.bottom{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 24px 0 40px;background:var(--navy);color:var(--on-dark)}
+.where{flex:1 1 0;min-width:0;font-size:17px;font-weight:500;color:var(--on-dark-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav{display:flex;align-items:center;gap:14px}
+.navbtn{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;border:2px solid rgba(255,255,255,.5);background:transparent;color:var(--on-dark);cursor:pointer}
+.navbtn svg{width:26px;height:26px}
+.pos{min-width:76px;text-align:center;font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+.tools{flex:1 1 0;display:flex;justify-content:flex-end;gap:10px}
+.toolbtn{font:inherit;font-size:16px;font-weight:500;display:inline-flex;align-items:center;gap:8px;color:var(--on-dark-soft);background:transparent;border:1px solid rgba(255,255,255,.3);border-radius:10px;padding:8px 14px;cursor:pointer}
+.toolbtn:hover{color:var(--on-dark)}
+.toolbtn svg{width:18px;height:18px}
+.blackout{position:absolute;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;padding-bottom:28px;background:#000000;cursor:pointer}
+.unblack{font:inherit;font-size:16px;color:#8a8f99;background:transparent;border:1px solid #3a3a3a;border-radius:10px;padding:10px 16px;cursor:pointer}
+
+@media (prefers-reduced-motion: reduce){
+  .screen{animation:none}
+  .vfill{transition:none}
+  .roll-wrap{overflow:auto;-webkit-mask-image:none;mask-image:none}
+  .roll{position:static;animation:none;padding:48px 0}
+}
+
+
+/* ───────────────────────────────────────────────────────────────────────
+   METFLIX | Direction artistique cinéma / écran 16:9
+   Habillage CSS UNIQUEMENT : aucun contenu, script ou keyframe d'origine
+   n'a été modifié. Décor et logo issus de la maquette METFLIX validée.
+   ─────────────────────────────────────────────────────────────────────── */
+:root {
+  --navy:#0b0d12;
+  --blue:#e50914;
+  --violet:#c50a19;
+  --ground:#0d1016;
+  --card:#1b1e26;
+  --line:#343843;
+  --ink:#f9f9fa;
+  --muted:#b5b9c4;
+  --on-dark:#ffffff;
+  --on-dark-soft:#aeb4c0;
+  --ok:#58c99c;
+  --warn:#f1ad66;
+  --grad:linear-gradient(122deg,#07090c 0%,#161b22 52%,#282029 100%);
+  --film:url(assets/mountain.webp);
+  --metflix-mark:url(data:image/png;base64,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);
+  color-scheme:dark;
+}
+body {
+  background:radial-gradient(ellipse at 73% 0%,#25232d 0%,#111319 40%,#07080c 100%);
+  color:var(--ink);
+}
+.stage { background:#0a0b10; border-radius:9px; box-shadow:0 26px 100px rgba(0,0,0,.72),0 0 0 1px rgba(255,255,255,.09); }
+.top {
+  position:relative;
+  z-index:5;
+  background:#07090d;
+  border-bottom:1px solid rgba(255,255,255,.12);
+  padding-left:36px;
+  padding-right:34px;
+  gap:16px;
+}
+.brand { font-size:0; min-width:204px; gap:18px; align-items:center; }
+.brand::before { content:''; display:block; width:167px; height:53px; background:var(--metflix-mark) center/contain no-repeat; flex:0 0 auto; }
+.brand small { font-size:11px; font-weight:600; letter-spacing:.2em; color:#babdc4; white-space:nowrap; }
+.chapters { gap:0; align-items:center; height:100%; }
+.chapters button { height:100%; padding:0 15px; border-radius:0; color:#b7b7be; font-size:15px; font-weight:500; white-space:nowrap; position:relative; transition:color .16s ease; }
+.chapters button:hover { color:#fff; }
+.chapters button[aria-current="true"] { color:#fff; font-weight:600; background:none; box-shadow:none; }
+.chapters button[aria-current="true"]::after { content:''; position:absolute; bottom:10px; left:16px; right:16px; height:4px; border-radius:3px; background:#e50914; }
+.screens { background:#0a0d13; }
+.screen {
+  background:radial-gradient(circle at 82% 24%,rgba(85,66,68,.2),transparent 40%), linear-gradient(138deg,#101319 0%,#0c0e14 60%,#11151d 100%);
+  color:#f7f7f8;
+  isolation:isolate;
+}
+.screen:not(.hero):not(.credits)::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:var(--film) right center/auto 112% no-repeat;
+  opacity:.12;
+  -webkit-mask-image:linear-gradient(90deg,transparent 25%,rgba(0,0,0,.16) 56%,#000 100%);
+  mask-image:linear-gradient(90deg,transparent 25%,rgba(0,0,0,.16) 56%,#000 100%);
+  filter:grayscale(.35);
+}
+.screen.dark:not(.hero) { background:radial-gradient(ellipse at 86% 40%,#251820 0%,#14151c 50%,#080a0e 100%); }
+.screen.dark:not(.hero)::before { opacity:.18; }
+.screen.hero {
+  background-image:linear-gradient(90deg,#080a0e 0%,rgba(8,10,14,.98) 30%,rgba(8,10,14,.87) 53%,rgba(8,10,14,.28) 100%),linear-gradient(0deg,#080a0e 0%,transparent 38%,rgba(0,0,0,.17) 100%),var(--film);
+  background-size:cover,cover,cover;
+  background-position:center,center,right 44%;
+  padding:48px 92px 54px;
+  gap:23px;
+}
+.kicker { color:#fa3d44; font-weight:700; font-size:17px; letter-spacing:.17em; }
+.dark .kicker { color:#ff555c; }
+.h1 { color:#fff; font-weight:700; letter-spacing:-.045em; text-shadow:0 3px 25px rgba(0,0,0,.26); }
+.h1.q { max-width:23em; }
+.dark .h1 { color:#fff; }
+.lead { color:#dadce2; }
+.lead.small { color:#b1b5bf; }
+.dark .lead { color:#fff; }
+.quote, .quote.ink { color:#fff; letter-spacing:-.03em; }
+.note { color:#aeb2bd; }
+.wordmark { gap:24px; }
+.wm { display:inline-block; font-size:0; line-height:1; color:transparent; flex:0 0 auto; width:570px; height:157px; background:var(--metflix-mark) left center/contain no-repeat; }
+.season { color:#fafafa; border-color:rgba(255,255,255,.42); background:rgba(0,0,0,.36); font-size:18px; padding:9px 18px; letter-spacing:.13em; }
+.hero .lead.big { font-size:35px; line-height:1.34; font-weight:500; max-width:630px; text-shadow:0 2px 14px rgba(0,0,0,.7); }
+.eplist { margin-top:5px; gap:15px; }
+.eplist li { background:linear-gradient(140deg,rgba(32,36,44,.93),rgba(14,16,22,.92)); border:1px solid rgba(255,255,255,.18); border-top:2px solid rgba(229,9,20,.85); border-radius:8px; min-width:236px; padding:19px 20px; font-size:21px; letter-spacing:-.025em; box-shadow:0 10px 30px rgba(0,0,0,.33); }
+.epn { color:#ff444b; font-size:13px; letter-spacing:.16em; }
+.card { background:linear-gradient(155deg,rgba(31,34,43,.97),rgba(22,24,32,.97)); color:#f6f6f8; border:1px solid rgba(255,255,255,.15); border-radius:12px; box-shadow:0 10px 34px rgba(0,0,0,.13); }
+.card .ico { background:rgba(229,9,20,.12); color:#ff5059; }
+.ico { background:#27232a; color:#ff515a; }
+.rule strong,.feature strong,.tname,.lbl,.ideaslbl,.question,.info strong,.nextlbl strong { color:#fff; }
+.rule .sub,.feature .sub { color:#c9cbd3; }
+.rule { border-top:3px solid rgba(229,9,20,.82); }
+.num { background:#e50914; color:white; }
+.tag.ep { background:#d50b1c; }
+.tag.sp { background:#b31529; }
+.tag.me { background:#303543; }
+.btn { background:#e50914; border-color:#e50914; color:#fff; border-radius:8px; box-shadow:0 5px 18px rgba(229,9,20,.17); transition:filter .18s, transform .18s; }
+.btn:hover:not(:disabled) { filter:brightness(1.15); transform:translateY(-1px); }
+.btn.ghost { background:#222630; color:#f5f5f6; border-color:#555b69; box-shadow:none; }
+.btn.ghost:hover { background:#343844; filter:none; }
+.btn.on-dark { border-color:#777781; background:#1b1d26; color:#fff; }
+.btn.on-dark:hover { background:#2e313d; }
+.btn.warn { background:#ad3640; border-color:#ad3640; }
+button:focus-visible,input:focus-visible { outline-color:#ff6a6f; }
+.boardtitle { color:#ff515a; }
+.addform input { background:#101218; color:#fff; border:2px solid #454955; border-radius:8px; }
+.addform input::placeholder { color:#9095a1; }
+.empty { color:#aeb3bd; }
+.chip { background:#272a34; color:#fff; border:1px solid #a63842; box-shadow:0 4px 15px rgba(0,0,0,.12); }
+.chip button { background:#373a46; color:#f1f2f4; }
+.seg button { background:#20232b; color:#f5f5f6; border-color:#454854; border-radius:8px; }
+.seg button[aria-pressed="true"] { background:#e50914; color:#fff; border-color:#e50914; }
+.gsum { color:#ff555f; }
+.table { border-top:3px solid #d70c1a; }
+.seat { background:#dd1827; }
+.tcount { color:#bbc0ca; }
+.say { color:#e9e9ec; background:#1a1c24; border:1px solid #8c3c46; border-left:4px solid #eb1727; border-radius:9px; }
+.saylbl { color:#ff555e; }
+.blank { background:#a8afbc; }
+.timer { background:linear-gradient(158deg,#24242b,#14181f); border-color:#49414b; }
+.timerlbl { color:#ff555c; }
+.clock { color:#fff; letter-spacing:-.045em; }
+.timerstate { color:#b8bcc7; }
+.timer.is-done .clock,.timer.is-done .timerstate { color:#ffb17a; }
+.ideachips li { background:#22252e; border-color:#444852; color:#fff; }
+.checklist li { background:#1c2029; color:#fff; border:1px solid #3e414b; border-left:4px solid #bc0b1d; border-radius:9px; }
+.checklist svg { color:#ff4d59; }
+.pill { color:#ff5560; border-color:#b7424d; background:rgba(229,9,20,.08); }
+.w { color:#fff; }
+.bl { border-color:#d6434c; }
+.bh { color:#adb1bf; }
+.example li { color:#f3f3f6; }
+.z1 { background:#ff545e; }
+.z2 { background:var(--ok); }
+.z3 { background:var(--warn); }
+.track { background:#353945; border-color:#434754; }
+.track .fill { background:#e50914; }
+.track .tick { color:#aeb2bf; }
+#sw.ok .clock,#sw.ok .timerstate { color:#58c99c; }
+#sw.ok .fill { background:#58c99c; }
+#sw.over .clock,#sw.over .timerstate { color:#ffb17a; }
+#sw.over .fill { background:#ffb17a; }
+.bigquote { color:#fff; background:#20232d; border-left:5px solid #e50914; }
+.onair { border:1px solid #9a2934; border-top:4px solid #e50914; background:linear-gradient(140deg,#282029,#17191f); }
+.onairlbl { background:#e50914; color:#fff; }
+.onairname { color:#fff; }
+.nextlbl { color:#bcc0ca; }
+.qlist li { background:#242832; border-color:#4c505d; color:#e7e9ee; }
+.qlist li.done { background:#191b23; color:#898d9a; }
+.qlist li.current { background:#c90b19; border-color:#e50914; color:#fff; }
+.qlist button { background:rgba(255,255,255,.1); }
+.scale span { border-color:#616472; border-radius:8px; background:#232631; color:#fff; }
+.scalelegend { color:#b7bbc5; }
+.question { color:#fff; }
+.reveal .src { color:#aaafbd; }
+.clbl { color:#ebedf1; }
+.cbtn { background:#232630; color:#fff; border-color:#565b67; border-radius:8px; }
+.cval { color:#fff; }
+.vbar { background:#373a46; }
+.vfill { background:#e50914; }
+.vsum { color:#b8bdc8; }
+.screen.credits { background:radial-gradient(ellipse at 50% 5%,#30161c,#0c0d12 56%,#07080a 100%); }
+.c-season,.c-role { color:#e14b54; }
+.c-title { color:#ed1424; }
+.wipe-done { color:#c5c8d0; }
+.bottom { background:#080a0e; border-top:1px solid rgba(255,255,255,.12); }
+.where { color:#9299a5; }
+.navbtn { border-color:#464b55; background:#1e212a; border-radius:8px; }
+.navbtn:hover:not(:disabled) { background:#d90919; border-color:#d90919; }
+.pos { color:#fff; }
+.toolbtn { color:#b7bdc7; background:#171a22; border:1px solid #393e49; border-radius:8px; }
+.toolbtn:hover { background:#282c35; color:#fff; }
+.blackout { background:#000; }
+.unblack { color:#aaa; border-color:#424242; }
+
+</style>
+
+<link rel="stylesheet" href="assets/immersive.css?v=13">
+
+<div class="viewport" id="viewport">
+<div class="frame" id="frame">
+<div class="stage" id="stage">
+
+<header class="top">
+  <div class="brand">METFLIX<span>LE STUDIO DU GROUPE</span></div>
+  <nav class="chapters" aria-label="Épisodes">
+    <button type="button" data-goto-chapter="ouverture">Ouverture</button>
+    <button type="button" data-goto-chapter="casting">Ép. 1 · Casting</button>
+    <button type="button" data-goto-chapter="scenaristes">Ép. 2 · Scénaristes</button>
+    <button type="button" data-goto-chapter="bande-annonce">Ép. 3 · Bande-annonce</button>
+    <button type="button" data-goto-chapter="avant-premiere">Ép. 4 · Avant-première</button>
+    <button type="button" data-goto-chapter="generique">Générique</button>
+  </nav>
+</header>
+
+<main class="screens" id="screens">
+
+<section data-scene="station" class="screen dark hero" data-chapter="ouverture" data-label="Ouverture" aria-label="Accueil">
+<div class="hero-scene" aria-hidden="true"><div class="hero-panorama"></div></div>
+  <p class="kicker">Digital Factory</p>
+  <div class="wordmark"><h1 class="story-title">Tes histoires.<br><span>Ta série.</span></h1><span class="season">Saison 1</span></div>
+  <p class="lead big">Aujourd’hui, chacun devient le héros de sa propre série.</p>
+  <ol class="eplist" aria-label="Programme de la séance">
+<li><button class="episode-card episode-1" type="button" data-goto-chapter="casting"><span class="episode-image" aria-hidden="true"></span><span class="episode-caption"><span class="epn">Épisode 1</span><span class="episode-title">Le casting</span></span></button></li>
+<li><button class="episode-card episode-2" type="button" data-goto-chapter="scenaristes"><span class="episode-image" aria-hidden="true"></span><span class="episode-caption"><span class="epn">Épisode 2</span><span class="episode-title">La salle des scénaristes</span></span></button></li>
+<li><button class="episode-card episode-3" type="button" data-goto-chapter="bande-annonce"><span class="episode-image" aria-hidden="true"></span><span class="episode-caption"><span class="epn">Épisode 3</span><span class="episode-title">La bande-annonce</span></span></button></li>
+<li><button class="episode-card episode-4" type="button" data-goto-chapter="avant-premiere"><span class="episode-image" aria-hidden="true"></span><span class="episode-caption"><span class="epn">Épisode 4</span><span class="episode-title">L’avant-première</span></span></button></li>
+</ol>
+</section>
+
+<section data-scene="workshop" class="screen" data-chapter="ouverture" data-label="Ouverture · L’objectif" aria-label="À quoi sert cette séance" hidden>
+  <p class="kicker">Ouverture</p>
+  <h2 class="h1">À quoi sert cette séance&nbsp;?</h2>
+  <p class="lead wide">À faire le point sur ce que tu sais faire et sur ce qui te freine, en jouant.</p>
+  <ul class="rules goals">
+    <li class="card rule"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"></path></svg></span><span><strong>Repérer ce que tu sais faire</strong><span class="sub">Tes scénaristes cherchent tes super-pouvoirs dans les histoires que tu racontes.</span></span></li>
+    <li class="card rule"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path></svg></span><span><strong>Nommer ce qui te freine</strong><span class="sub">Tu choisis ton méchant, et le groupe t’aide à trouver une parade.</span></span></li>
+    <li class="card rule"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 13 5.2 3.5a.5.5 0 0 0 .8-.4V7.9a.5.5 0 0 0-.8-.4L16 11"></path><rect x="2" y="6" width="14" height="12" rx="2"></rect></svg></span><span><strong>T’essayer à parler de toi</strong><span class="sub">Tu tournes une bande-annonce de 30 à 45&nbsp;secondes et tu repars avec.</span></span></li>
+  </ul>
+  <p class="note">Personne ne t’évalue et personne ne choisit un métier à ta place. Ton conseiller reste là pour ton parcours.</p>
+</section>
+
+<section data-scene="space" class="screen" data-chapter="ouverture" data-label="Ouverture · Les règles du plateau" aria-label="Les règles du plateau" hidden>
+  <p class="kicker">Ouverture</p>
+  <h2 class="h1">Les règles du plateau</h2>
+  <ol class="rules">
+    <li class="card rule"><span class="num lg">1</span><span><strong>On ne se moque pas.</strong><span class="sub">Chaque histoire mérite d’être écoutée jusqu’au bout.</span></span></li>
+    <li class="card rule"><span class="num lg">2</span><span><strong>Ce qui se dit ici reste ici.</strong><span class="sub">Les histoires racontées dans le groupe ne sortent pas de la salle.</span></span></li>
+    <li class="card rule"><span class="num lg">3</span><span><strong>Chacun peut passer son tour.</strong><span class="sub">Il suffit de dire «&nbsp;je passe&nbsp;», sans avoir à se justifier.</span></span></li>
+  </ol>
+</section>
+
+<section data-scene="horror" class="screen" data-chapter="ouverture" data-label="Ouverture · Le studio" aria-label="Le studio" hidden>
+  <p class="kicker">Ouverture</p>
+  <h2 class="h1">Le studio, c’est pour toi</h2>
+  <div class="duo">
+    <div class="card feature">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 13 5.2 3.5a.5.5 0 0 0 .8-.4V7.9a.5.5 0 0 0-.8-.4L16 11"></path><rect x="2" y="6" width="14" height="12" rx="2"></rect></svg></span>
+      <strong>Ta vidéo t’appartient.</strong>
+      <span class="sub">Elle n’est pas diffusée et tu repars avec.</span>
+    </div>
+    <div class="card feature">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M19 10v1a7 7 0 0 1-14 0v-1"></path><path d="M12 18v4"></path></svg></span>
+      <strong>Pas envie d’être filmé&nbsp;?</strong>
+      <span class="sub">On trouvera une autre solution&nbsp;: ta voix seule, ou un scénariste qui lit ton texte.</span>
+    </div>
+  </div>
+</section>
+
+<section data-scene="theatre" class="screen" data-chapter="casting" data-label="Épisode 1 · Le casting" aria-label="Le casting" hidden>
+  <p class="kicker">Épisode 1 · Le casting</p>
+  <h2 class="h1 q">Quelle série, quelle émission, quelle chaîne YouTube ou quel jeu tu regardes en boucle&nbsp;?</h2>
+  <p class="lead">Et qu’est-ce qui te plaît dedans&nbsp;?</p>
+  <div class="card board">
+    <div class="boardhead">
+      <span class="boardtitle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2-6.2 3.2L7 14.2 2 9.3l6.9-1z"></path></svg>Ce qui nous plaît</span>
+      <form class="addform" id="motForm" autocomplete="off">
+        <label class="sr" for="motInput">Ajouter un mot</label>
+        <input id="motInput" name="mot" type="text" maxlength="40" placeholder="Un mot : l’entraide, l’action…">
+        <button class="btn" type="submit">Ajouter</button>
+      </form>
+    </div>
+    <div class="chips" id="motChips" aria-live="polite"></div>
+    <p class="empty" id="motEmpty">Les mots du groupe s’affichent ici. Gardez-les en tête&nbsp;: ils donneront le genre de votre série.</p>
+  </div>
+</section>
+
+<section data-scene="future" class="screen" data-chapter="scenaristes" data-label="Épisode 2 · Les groupes" aria-label="Former les groupes" hidden>
+  <p class="kicker">Épisode 2 · La salle des scénaristes</p>
+  <h2 class="h1">Formez les groupes</h2>
+  <p class="note">12 personnes maximum.</p>
+  <div class="grouprow">
+    <span class="lbl" id="countLbl">Nous sommes</span>
+    <div class="seg" id="countSeg" role="group" aria-labelledby="countLbl">
+      <button type="button" data-count="4" aria-pressed="false">4</button>
+      <button type="button" data-count="5" aria-pressed="false">5</button>
+      <button type="button" data-count="6" aria-pressed="false">6</button>
+      <button type="button" data-count="7" aria-pressed="false">7</button>
+      <button type="button" data-count="8" aria-pressed="false">8</button>
+      <button type="button" data-count="9" aria-pressed="false">9</button>
+      <button type="button" data-count="10" aria-pressed="false">10</button>
+      <button type="button" data-count="11" aria-pressed="false">11</button>
+      <button type="button" data-count="12" aria-pressed="true">12</button>
+    </div>
+    <span class="gsum" id="groupSummary" aria-live="polite">3 groupes : 4 + 4 + 4.</span>
+  </div>
+  <div class="tables" id="tables"></div>
+  <p class="lead small">Une table et un iPad par groupe. Les cartes et les chronomètres sont dans l’appli.</p>
+</section>
+
+<section data-scene="workshop" class="screen app-join" data-chapter="scenaristes" data-label="Épisode 2 · Rejoindre l’appli" aria-label="Rejoindre l’application" hidden>
+<div class="join-copy"><p class="kicker">Épisode 2 · La salle des scénaristes</p><h2 class="h1">Vos cartes sont ici.</h2><p class="lead">Un iPad par groupe.<br>Scannez pour entrer dans votre studio.</p><ol class="join-steps"><li>Ouvrez l’appli sur un seul iPad par groupe.</li><li>Inscrivez vos prénoms ou surnoms.</li><li>Choisissez le premier héros, puis tirez deux cartes.</li></ol><p class="note">Cartes, consignes et chronomètres vous accompagnent.<br>Chaque groupe avance à son rythme.</p></div>
+<a class="join-qr" href="https://digitalfactory-lab.github.io/Metflix/appli/" target="_blank" rel="noopener"><img src="assets/rejoindre-appli.svg" alt="QR code pour ouvrir l’application METFLIX"><strong>Ouvrir l’appli ↗</strong><span>digitalfactory-lab.github.io/Metflix/appli/</span></a>
+</section>
+<section data-scene="underwater" class="screen dark center" data-chapter="scenaristes" data-label="Épisode 2 · La consigne" aria-label="La consigne des scénaristes" hidden>
+  <p class="kicker">Épisode 2 · La salle des scénaristes</p>
+  <p class="quote">Dans une série, ce sont les scénaristes qui connaissent le mieux le héros.</p>
+  <p class="lead big">Ici, vous êtes les scénaristes des autres. Chacun raconte un épisode de sa vie, et les autres y cherchent ses super-pouvoirs.</p>
+</section>
+
+<section data-scene="workshop" class="screen" data-chapter="scenaristes" data-label="Épisode 2 · Étape A, les épisodes précédents" aria-label="Étape A, les épisodes précédents" hidden>
+  <p class="kicker"><span class="tag ep"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z"></path><path d="m6.2 5.3 3.1 3.9"></path><path d="m12.4 3.4 3.1 4"></path><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"></path></svg>Étape A</span>Les épisodes précédents</p>
+  <div class="split">
+    <div class="col">
+      <h2 class="h1">Raconte un épisode de ta vie</h2>
+      <ol class="steps">
+        <li><span class="num">1</span><span>Tire deux cartes épisode et garde celle que tu préfères.</span></li>
+        <li><span class="num">2</span><span>Raconte ton épisode en 2 ou 3 minutes. Les scénaristes écoutent sans couper.</span></li>
+        <li><span class="num">3</span><span>Chaque scénariste te donne une carte super-pouvoir et dit pourquoi.</span></li>
+      </ol>
+      <p class="say"><span class="saylbl">La phrase des scénaristes</span>«&nbsp;Je te donne <span class="blank"></span>, parce que dans ton histoire, tu as <span class="blank wide"></span>&nbsp;»</p>
+    </div>
+    <div class="card timer" data-timer data-seconds="180">
+      <span class="timerlbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2h4"></path><path d="m12 14 3-3"></path><circle cx="12" cy="14" r="8"></circle></svg>Temps du récit</span>
+      <span class="clock" data-clock role="timer" aria-live="off">3:00</span>
+      <span class="timerstate" data-state aria-live="polite">Prêt</span>
+      <div class="timerbtns">
+        <button class="btn" type="button" data-start>Démarrer</button>
+        <button class="btn ghost" type="button" data-reset>Recommencer</button>
+      </div>
+      <div class="timerbtns">
+        <button class="btn ghost sm" type="button" data-add="-30" aria-label="Retirer 30 secondes">−30 s</button>
+        <button class="btn ghost sm" type="button" data-add="30" aria-label="Ajouter 30 secondes">+30 s</button>
+        <button class="btn ghost sm" type="button" data-sound aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path></svg><span data-sound-label>Son activé</span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-scene="horror" class="screen" data-chapter="scenaristes" data-label="Épisode 2 · Étape B, le méchant" aria-label="Étape B, le méchant" hidden>
+  <p class="kicker"><span class="tag me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 10c0-2.2 2.5-3.5 5.5-3.5 1.9 0 3.2.8 4.5.8s2.6-.8 4.5-.8c3 0 5.5 1.3 5.5 3.5 0 3.7-2.2 7-5 7-1.9 0-3.4-1.8-5-1.8S8.9 17 7 17c-2.8 0-5-3.3-5-7z"></path><path d="M6 11.2c.9-.8 2.4-.8 3.3 0"></path><path d="M14.7 11.2c.9-.8 2.4-.8 3.3 0"></path></svg>Étape B</span>Le méchant</p>
+  <h2 class="h1">Chaque héros a son méchant</h2>
+  <div class="split">
+    <ol class="steps">
+      <li><span class="num">1</span><span>Choisis un méchant dans le paquet. Tu n’as pas à expliquer pourquoi.</span></li>
+      <li><span class="num">2</span><span>Lis sa réplique à voix haute.</span></li>
+      <li><span class="num">3</span><span>Tes scénaristes t’inventent des parades. Garde celle qui te parle.</span></li>
+    </ol>
+    <div class="card ideas">
+      <span class="ideaslbl">Une parade, ça peut être</span>
+      <ul class="ideachips">
+        <li>un allié</li>
+        <li>une astuce</li>
+        <li>une habitude</li>
+        <li>une phrase à se dire</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section data-scene="theatre" class="screen" data-chapter="scenaristes" data-label="Épisode 2 · Étape C, la fiche personnage" aria-label="Étape C, la fiche personnage" hidden>
+  <p class="kicker"><span class="tag sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"></path></svg>Étape C</span>La fiche personnage</p>
+  <h2 class="h1">Remplis le recto de ta fiche</h2>
+  <ul class="checklist">
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><span>Le titre et le genre de ta série</span></li>
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><span>Note deux ou trois super-pouvoirs repérés par le groupe, puis choisis celui que tu souhaites présenter dans ta bande-annonce.</span></li>
+    <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><span>Ton méchant et ta parade</span></li>
+    
+  </ul>
+  <p class="note">Pour chaque super-pouvoir, note l’épisode qui le prouve. Le décor, tu le choisiras au moment du tournage.</p>
+</section>
+
+<section data-scene="future" class="screen" data-chapter="bande-annonce" data-label="Épisode 3 · Le modèle" aria-label="Le modèle de bande-annonce" hidden>
+  <p class="kicker">Épisode 3 · La bande-annonce</p>
+  <div class="titlerow"><h2 class="h1">Écris ta bande-annonce</h2><span class="pill">30 à 45 secondes</span></div>
+  <p class="lead small">À la troisième personne, comme une voix off. Le modèle est au verso de ta fiche.</p>
+  <ol class="tpl">
+    <li><span class="num sm">1</span><span class="row"><span class="w">Dans un monde où</span><span class="bk"><span class="bl"></span><span class="bh">le décor de ta série</span></span></span></li>
+    <li><span class="num sm">2</span><span class="row"><span class="bk s"><span class="bl"></span><span class="bh">ton prénom</span></span><span class="w">a un super-pouvoir&nbsp;:</span><span class="bk"><span class="bl"></span><span class="bh">un de tes super-pouvoirs</span></span></span></li>
+    <li><span class="num sm">3</span><span class="row"><span class="w">La preuve&nbsp;?</span><span class="bk"><span class="bl"></span><span class="bh">ton épisode, en une phrase</span></span></span></li>
+    <li><span class="num sm">4</span><span class="row"><span class="w">Mais</span><span class="bk"><span class="bl"></span><span class="bh">ton méchant</span></span><span class="w">rôde…</span></span></li>
+    <li><span class="num sm">5</span><span class="row"><span class="w">Heureusement,</span><span class="bk s"><span class="bl"></span><span class="bh">ton prénom</span></span><span class="w">a sa parade&nbsp;:</span><span class="bk"><span class="bl"></span><span class="bh">ta parade</span></span></span></li>
+    <li><span class="num sm">6</span><span class="row"><span class="w">Bientôt sur Metflix&nbsp;:</span><span class="bk"><span class="bl"></span><span class="bh">le titre de ta série</span></span></span></li>
+  </ol>
+</section>
+
+<section data-scene="workshop" class="screen" data-chapter="bande-annonce" data-label="Épisode 3 · Un exemple" aria-label="Un exemple de bande-annonce" hidden>
+  <p class="kicker">Épisode 3 · La bande-annonce</p>
+  <h2 class="h1">Un exemple</h2>
+  <ol class="card example">
+    <li><span class="num sm">1</span><span>«&nbsp;Dans un monde où tout va trop vite,</span></li>
+    <li><span class="num sm">2</span><span>Karim a un super-pouvoir&nbsp;: la débrouillardise.</span></li>
+    <li><span class="num sm">3</span><span>La preuve&nbsp;? Le jour où sa voiture est tombée en panne en pleine campagne, il l’a remise en route avec trois fois rien.</span></li>
+    <li><span class="num sm">4</span><span>Mais le Trac rôde…</span></li>
+    <li><span class="num sm">5</span><span>Heureusement, Karim a sa parade&nbsp;: il respire avant de parler.</span></li>
+    <li><span class="num sm">6</span><span>Bientôt sur Metflix&nbsp;: Karim, le roi du système D.&nbsp;»</span></li>
+  </ol>
+</section>
+
+<section data-scene="horror" class="screen" data-chapter="bande-annonce" data-label="Épisode 3 · Répétition" aria-label="Chrono de répétition" hidden>
+  <p class="kicker">Épisode 3 · Répétition</p>
+  <div class="split">
+    <div class="col">
+      <h2 class="h1">Chrono en main</h2>
+      <p class="lead">Lis ton texte à voix haute, par deux. Le chrono te dit si tu es dans le temps.</p>
+      <ul class="zones">
+        <li><span class="zdot z1"></span>Moins de 30 s&nbsp;: tu peux en dire un peu plus</li>
+        <li><span class="zdot z2"></span>De 30 à 45 s&nbsp;: c’est parfait</li>
+        <li><span class="zdot z3"></span>Plus de 45 s&nbsp;: coupe une phrase</li>
+      </ul>
+    </div>
+    <div class="card timer" id="sw">
+      <span class="timerlbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2h4"></path><path d="m12 14 3-3"></path><circle cx="12" cy="14" r="8"></circle></svg>Ta bande-annonce dure</span>
+      <span class="clock" id="swClock" role="timer" aria-live="off">0:00</span>
+      <span class="timerstate" id="swState" aria-live="polite">Prêt</span>
+      <div class="track" aria-hidden="true"><span class="zone"></span><span class="fill" id="swFill"></span><span class="tick t30">30 s</span><span class="tick t45">45 s</span></div>
+      <div class="timerbtns">
+        <button class="btn" type="button" id="swStart">Démarrer</button>
+        <button class="btn ghost" type="button" id="swReset">Recommencer</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-scene="station" class="screen" data-chapter="bande-annonce" data-label="Épisode 3 · Le briefing du héros" aria-label="Le briefing du héros" hidden>
+  <p class="kicker">Épisode 3 · Juste avant le tournage</p>
+  <h2 class="h1">Le briefing du héros</h2>
+  <p class="lead">Dis-toi dans ta tête, avec ton prénom&nbsp;:</p>
+  <p class="card bigquote">«&nbsp;<span class="blank wide"></span>, tu stresses un peu, c’est normal. Tu as déjà fait plus dur.&nbsp;»</p>
+</section>
+
+<section data-scene="space" class="screen" data-chapter="bande-annonce" data-label="Épisode 3 · Le plateau" aria-label="Ordre de passage au studio" hidden>
+  <p class="kicker">Épisode 3 · Le plateau</p>
+  <div class="split even">
+    <div class="col">
+      <div class="card onair">
+        <span class="onairlbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 13 5.2 3.5a.5.5 0 0 0 .8-.4V7.9a.5.5 0 0 0-.8-.4L16 11"></path><rect x="2" y="6" width="14" height="12" rx="2"></rect></svg>En tournage</span>
+        <span class="onairname" id="onAirName" aria-live="polite">À venir</span>
+        <span class="nextlbl" id="nextWrap" hidden>Ensuite&nbsp;: <strong id="nextName"></strong></span>
+        <div class="timerbtns">
+          <button class="btn" type="button" id="qNext">Héros suivant</button>
+          <button class="btn ghost" type="button" id="qPrev">Revenir</button>
+        </div>
+      </div>
+      <p class="note">Pendant ce temps&nbsp;: répète ton texte par deux, finis ta fiche et choisis ton image de fond.</p>
+    </div>
+    <div class="card queue">
+      <span class="boardtitle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path></svg>Ordre de passage</span>
+      <form class="addform" id="qForm" autocomplete="off">
+        <label class="sr" for="qInput">Ajouter un prénom</label>
+        <input id="qInput" name="prenom" type="text" maxlength="60" placeholder="Prénom, puis Entrée">
+        <button class="btn" type="submit">Ajouter</button>
+      </form>
+      <ol class="qlist" id="qList"></ol>
+      <p class="empty" id="qEmpty">Tape les prénoms dans l’ordre de passage, les volontaires d’abord. Tu peux en mettre plusieurs d’un coup, séparés par des virgules.</p>
+    </div>
+  </div>
+</section>
+
+<section data-scene="underwater" class="screen" data-chapter="avant-premiere" data-label="Épisode 4 · Avant de te voir" aria-label="Avant de te voir" hidden>
+  <p class="kicker">Épisode 4 · L’avant-première</p>
+  <h2 class="h1">Avant de te voir</h2>
+  <p class="lead">Entoure ta note au verso de ta fiche&nbsp;: à quel point ton stress va se voir&nbsp;?</p>
+  <div class="scale" aria-hidden="true"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+  <p class="scalelegend">0&nbsp;: ça ne se voit pas du tout · 10&nbsp;: ça se voit énormément</p>
+  <div class="card info">
+    <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M19 10v1a7 7 0 0 1-14 0v-1"></path><path d="M12 18v4"></path></svg></span>
+    <span><strong>Ta voix va te paraître bizarre.</strong> C’est normal&nbsp;: d’habitude, tu l’entends aussi à travers les os du crâne. Le micro, lui, ne capte que ce qui passe par l’air.</span>
+  </div>
+</section>
+
+<section data-scene="theatre" class="screen dark center" data-chapter="avant-premiere" data-label="Épisode 4 · La projection" aria-label="La projection" hidden>
+  <p class="kicker">Épisode 4 · L’avant-première</p>
+  <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></span>
+  <p class="quote">Regarde ta bande-annonce comme si c’était celle de quelqu’un que tu ne connais pas.</p>
+  <p class="lead">On applaudit à la fin de chacune.</p>
+</section>
+
+<section data-scene="future" class="screen" data-chapter="avant-premiere" data-label="Épisode 4 · Après la projection" aria-label="Après la projection" hidden>
+  <p class="kicker">Épisode 4 · Après la projection</p>
+  <h2 class="h1">Et maintenant, ta seconde note</h2>
+  <div class="split">
+    <div class="col">
+      <p class="lead">Entoure-la au verso de ta fiche. Puis on lève la main.</p>
+      <p class="question">Qui a mis une note plus basse après&nbsp;?</p>
+      <div><button class="btn ghost" type="button" id="revealBtn" aria-expanded="false" aria-controls="reveal">Ce que disent les chercheurs</button></div>
+      <div class="card reveal" id="reveal" hidden>
+        <p><strong>On croit que notre stress se voit beaucoup plus qu’il ne se voit.</strong> Les chercheurs appellent ça l’illusion de transparence.</p>
+        <p class="src">Savitsky et Gilovich, 2003</p>
+      </div>
+    </div>
+    <div class="card votes">
+      <span class="boardtitle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-4 0v5"></path><path d="M14 10V4a2 2 0 0 0-4 0v6"></path><path d="M10 10.5V6a2 2 0 0 0-4 0v8"></path><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-6-2.3l-3.6-3.6a2 2 0 0 1 2.8-2.8L7 15"></path></svg>Mains levées</span>
+      <div class="counter">
+        <span class="clbl">Note plus basse après</span>
+        <span class="cctl"><button class="cbtn" type="button" data-vote="lower" data-delta="-1" aria-label="Retirer une main, note plus basse">−</button><span class="cval" id="vLower">0</span><button class="cbtn" type="button" data-vote="lower" data-delta="1" aria-label="Ajouter une main, note plus basse">+</button></span>
+      </div>
+      <div class="counter">
+        <span class="clbl">Note égale ou plus haute</span>
+        <span class="cctl"><button class="cbtn" type="button" data-vote="other" data-delta="-1" aria-label="Retirer une main, note égale ou plus haute">−</button><span class="cval" id="vOther">0</span><button class="cbtn" type="button" data-vote="other" data-delta="1" aria-label="Ajouter une main, note égale ou plus haute">+</button></span>
+      </div>
+      <div class="vbar" aria-hidden="true"><span class="vfill" id="vFill"></span></div>
+      <p class="vsum" id="vSum" aria-live="polite">Aucune main comptée pour l’instant.</p>
+    </div>
+  </div>
+</section>
+
+<section data-scene="workshop" class="screen center" data-chapter="generique" data-label="Le générique · Le tour de table" aria-label="Le tour de table" hidden>
+  <p class="kicker">Le générique</p>
+  <p class="quote ink">Quel super-pouvoir, donné par les autres, t’a le plus surpris&nbsp;?</p>
+  <p class="lead">Un tour de table, une phrase chacun.</p>
+</section>
+
+<section data-scene="station" class="screen credits" id="s-credits" data-chapter="generique" data-label="Le générique de fin" aria-label="Le générique de fin" hidden>
+  <div class="roll-wrap"><div class="roll" id="roll"></div></div>
+  <div class="creditbar">
+    <button class="btn on-dark" type="button" id="replay">Rejouer le générique</button>
+    <button class="btn on-dark" type="button" id="wipe">Effacer la séance</button>
+    <span class="wipe-confirm" id="wipeConfirm" hidden>Effacer les mots, les groupes, les prénoms et les mains levées&nbsp;?
+      <button class="btn warn sm" type="button" id="wipeYes">Oui, effacer</button>
+      <button class="btn on-dark sm" type="button" id="wipeNo">Annuler</button>
+    </span>
+    <span class="wipe-done" id="wipeDone" role="status" hidden>Séance effacée.</span>
+  </div>
+</section>
+
+</main>
+
+<footer class="bottom">
+  <span class="where" id="chapterLabel">Ouverture</span>
+  <div class="nav">
+    <button class="navbtn" id="prev" type="button" aria-label="Écran précédent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+    <span class="pos" id="pos">1 / 19</span>
+    <button class="navbtn" id="next" type="button" aria-label="Écran suivant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
+  </div>
+  <div class="tools">
+    <button class="toolbtn" id="black" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>Écran noir</button>
+    <button class="toolbtn" id="fs" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M21 8V5a2 2 0 0 0-2-2h-3"></path><path d="M3 16v3a2 2 0 0 0 2 2h3"></path><path d="M16 21h3a2 2 0 0 0 2-2v-3"></path></svg><span id="fsLabel">Plein écran</span></button>
+  </div>
+</footer>
+
+<div class="blackout" id="blackout" hidden><button class="unblack" type="button" id="unblack">Revenir à l’écran</button></div>
+
+</div>
+</div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var W = 1600, H = 900, PREFIX = 'metflix-s1:';
+  function load(key, fallback) {
+    try { var raw = localStorage.getItem(PREFIX + key); return raw === null ? fallback : JSON.parse(raw); }
+    catch (e) { return fallback; }
+  }
+  function save(key, value) { try { localStorage.setItem(PREFIX + key, JSON.stringify(value)); } catch (e) {} }
+  function drop(key) { try { localStorage.removeItem(PREFIX + key); } catch (e) {} }
+  function $(id) { return document.getElementById(id); }
+  function each(list, fn) { Array.prototype.forEach.call(list, fn); }
+  function fmt(sec) { sec = Math.max(0, sec); var m = Math.floor(sec / 60), s = sec % 60; return m + ':' + (s < 10 ? '0' : '') + s; }
+
+  /* Mise à l'échelle de l'écran 16:9 dans la fenêtre */
+  var viewport = $('viewport'), frame = $('frame'), stage = $('stage');
+  function fit() {
+    var r = viewport.getBoundingClientRect();
+    var s = Math.min(r.width / W, r.height / H);
+    if (!isFinite(s) || s <= 0) s = 0.1;
+    stage.style.transform = 'scale(' + s + ')';
+    frame.style.width = Math.floor(W * s) + 'px';
+    frame.style.height = Math.floor(H * s) + 'px';
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  /* État de la séance, gardé dans ce navigateur */
+  var words = load('mots', []); if (!Array.isArray(words)) words = [];
+  var PLANS = { 4: [4], 5: [5], 6: [3, 3], 7: [4, 3], 8: [4, 4], 9: [3, 3, 3], 10: [4, 3, 3], 11: [4, 4, 3], 12: [4, 4, 4] };
+  var count = load('participants', 12); if (!PLANS[count]) count = 12;
+  var queue = load('plateau', null); if (!queue || !Array.isArray(queue.names)) queue = { names: [], at: 0 };
+  var votes = load('mains', null); if (!votes || typeof votes.lower !== 'number' || typeof votes.other !== 'number') votes = { lower: 0, other: 0 };
+
+  /* Son de fin de chrono */
+  var soundOn = load('son', true) !== false, actx = null;
+  function audio() {
+    try {
+      if (!actx) { var C = window.AudioContext || window.webkitAudioContext; if (C) actx = new C(); }
+      if (actx && actx.state === 'suspended') actx.resume();
+    } catch (e) {}
+    return actx;
+  }
+  function chime() {
+    if (!soundOn) return;
+    var a = audio(); if (!a) return;
+    try {
+      [0, 0.3].forEach(function (delay, n) {
+        var o = a.createOscillator(), g = a.createGain(), t0 = a.currentTime + delay;
+        o.type = 'sine'; o.frequency.value = n ? 1175 : 880;
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.exponentialRampToValueAtTime(0.22, t0 + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + 1.1);
+        o.connect(g); g.connect(a.destination); o.start(t0); o.stop(t0 + 1.2);
+      });
+    } catch (e) {}
+  }
+
+  /* Compte à rebours (récits) */
+  each(document.querySelectorAll('[data-timer]'), function (box) {
+    var base = parseInt(box.getAttribute('data-seconds'), 10) || 180;
+    var total = base, left = base, running = false, endAt = 0, iv = null;
+    var clock = box.querySelector('[data-clock]'), state = box.querySelector('[data-state]');
+    var startBtn = box.querySelector('[data-start]'), soundBtn = box.querySelector('[data-sound]');
+    function shown() { return Math.max(0, Math.ceil(left - 0.001)); }
+    function render() {
+      clock.textContent = fmt(shown());
+      var done = left <= 0;
+      box.classList.toggle('is-done', done);
+      state.textContent = done ? 'Temps écoulé, au héros suivant' : running ? 'En cours' : (left < total ? 'En pause' : 'Prêt');
+      startBtn.textContent = running ? 'Pause' : (left > 0 && left < total ? 'Reprendre' : 'Démarrer');
+    }
+    function stop() { running = false; clearInterval(iv); iv = null; }
+    function tick() {
+      left = (endAt - Date.now()) / 1000;
+      if (left <= 0) { left = 0; stop(); chime(); }
+      render();
+    }
+    startBtn.addEventListener('click', function () {
+      if (running) { left = Math.max(0, (endAt - Date.now()) / 1000); stop(); }
+      else {
+        if (left <= 0) { total = base; left = base; }
+        running = true; endAt = Date.now() + left * 1000; clearInterval(iv); iv = setInterval(tick, 200); audio();
+      }
+      render();
+    });
+    box.querySelector('[data-reset]').addEventListener('click', function () { stop(); total = base; left = base; render(); });
+    each(box.querySelectorAll('[data-add]'), function (b) {
+      b.addEventListener('click', function () {
+        var d = parseInt(b.getAttribute('data-add'), 10);
+        if (running) {
+          endAt = Math.max(Date.now() + 1000, endAt + d * 1000);
+          left = (endAt - Date.now()) / 1000;
+        } else if (left === total) {
+          total = Math.max(30, total + d); left = total;
+        } else {
+          left = Math.max(0, left + d);
+        }
+        total = Math.max(total, left);
+        render();
+      });
+    });
+    if (soundBtn) {
+      var paint = function () {
+        soundBtn.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
+        soundBtn.querySelector('[data-sound-label]').textContent = soundOn ? 'Son activé' : 'Son coupé';
+      };
+      paint();
+      soundBtn.addEventListener('click', function () { soundOn = !soundOn; save('son', soundOn); paint(); if (soundOn) audio(); });
+    }
+    render();
+  });
+
+  /* Chrono de répétition de la bande-annonce */
+  (function () {
+    var box = $('sw'), clock = $('swClock'), state = $('swState'), fill = $('swFill'), startBtn = $('swStart');
+    var running = false, startAt = 0, acc = 0, iv = null;
+    function elapsed() { return acc + (running ? (Date.now() - startAt) / 1000 : 0); }
+    function render() {
+      var e = elapsed();
+      clock.textContent = fmt(Math.floor(e));
+      fill.style.width = (Math.min(e / 60, 1) * 100) + '%';
+      var zone = e >= 45 ? 'over' : (e >= 30 ? 'ok' : '');
+      box.classList.toggle('ok', zone === 'ok');
+      box.classList.toggle('over', zone === 'over');
+      if (zone === 'over') state.textContent = 'Trop long : coupe une phrase';
+      else if (zone === 'ok') state.textContent = 'Dans le temps';
+      else if (running) state.textContent = 'En cours';
+      else state.textContent = e > 0 ? 'Moins de 30 s : tu peux en dire un peu plus' : 'Prêt';
+      startBtn.textContent = running ? 'Arrêter' : (e > 0 ? 'Reprendre' : 'Démarrer');
+    }
+    startBtn.addEventListener('click', function () {
+      if (running) { acc = elapsed(); running = false; clearInterval(iv); }
+      else { running = true; startAt = Date.now(); clearInterval(iv); iv = setInterval(render, 100); }
+      render();
+    });
+    $('swReset').addEventListener('click', function () { running = false; clearInterval(iv); acc = 0; render(); });
+    render();
+  })();
+
+  /* Casting : les mots du groupe */
+  var motForm = $('motForm'), motInput = $('motInput'), motChips = $('motChips'), motEmpty = $('motEmpty');
+  function renderWords() {
+    motChips.textContent = '';
+    words.forEach(function (w, i) {
+      var chip = document.createElement('span'); chip.className = 'chip';
+      var txt = document.createElement('span'); txt.textContent = w;
+      var x = document.createElement('button'); x.type = 'button'; x.textContent = '×';
+      x.setAttribute('aria-label', 'Retirer ' + w);
+      x.addEventListener('click', function () { words.splice(i, 1); save('mots', words); renderWords(); motInput.focus(); });
+      chip.appendChild(txt); chip.appendChild(x); motChips.appendChild(chip);
+    });
+    motEmpty.hidden = words.length > 0;
+  }
+  motForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = motInput.value.trim();
+    if (!v) return;
+    if (words.indexOf(v) === -1) words.push(v);
+    save('mots', words); motInput.value = ''; renderWords();
+  });
+
+  /* Groupes de scénaristes */
+  var seg = $('countSeg'), tables = $('tables'), groupSummary = $('groupSummary');
+  function renderGroups() {
+    each(seg.querySelectorAll('button'), function (b) { b.setAttribute('aria-pressed', String(parseInt(b.getAttribute('data-count'), 10) === count)); });
+    tables.textContent = '';
+    var plan = PLANS[count];
+    plan.forEach(function (n, i) {
+      var card = document.createElement('div'); card.className = 'card table';
+      var name = document.createElement('span'); name.className = 'tname'; name.textContent = 'Table ' + 'ABC'.charAt(i);
+      var seats = document.createElement('span'); seats.className = 'seats'; seats.setAttribute('aria-hidden', 'true');
+      for (var k = 0; k < n; k++) { var d = document.createElement('span'); d.className = 'seat'; seats.appendChild(d); }
+      var c = document.createElement('span'); c.className = 'tcount'; c.textContent = n + ' scénaristes';
+      card.appendChild(name); card.appendChild(seats); card.appendChild(c); tables.appendChild(card);
+    });
+    groupSummary.textContent = plan.length === 1 ? 'Un seul groupe de ' + plan[0] + '.' : plan.length + ' groupes : ' + plan.join(' + ') + '.';
+  }
+  seg.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-count]'); if (!b) return;
+    count = parseInt(b.getAttribute('data-count'), 10); save('participants', count); renderGroups();
+  });
+
+  /* Plateau : ordre de passage au studio */
+  var qForm = $('qForm'), qInput = $('qInput'), qList = $('qList'), qEmpty = $('qEmpty');
+  var onAirName = $('onAirName'), nextWrap = $('nextWrap'), nextName = $('nextName'), qNext = $('qNext'), qPrev = $('qPrev');
+  function renderQueue() {
+    var n = queue.names.length;
+    queue.at = Math.max(0, Math.min(queue.at || 0, n));
+    qList.textContent = '';
+    queue.names.forEach(function (name, i) {
+      var li = document.createElement('li');
+      li.className = i < queue.at ? 'done' : (i === queue.at ? 'current' : '');
+      var num = document.createElement('span'); num.className = 'qn'; num.textContent = (i + 1) + '.';
+      var t = document.createElement('span'); t.textContent = name;
+      var x = document.createElement('button'); x.type = 'button'; x.textContent = '×';
+      x.setAttribute('aria-label', 'Retirer ' + name);
+      x.addEventListener('click', function () {
+        queue.names.splice(i, 1);
+        if (i < queue.at) queue.at -= 1;
+        save('plateau', queue); renderQueue();
+      });
+      li.appendChild(num); li.appendChild(t); li.appendChild(x); qList.appendChild(li);
+    });
+    qEmpty.hidden = n > 0;
+    if (n === 0) { onAirName.textContent = 'À venir'; nextWrap.hidden = true; }
+    else if (queue.at >= n) { onAirName.textContent = 'Tournage terminé'; nextWrap.hidden = false; nextName.textContent = 'l’avant-première'; }
+    else {
+      onAirName.textContent = queue.names[queue.at];
+      nextWrap.hidden = false;
+      nextName.textContent = queue.at + 1 < n ? queue.names[queue.at + 1] : 'l’avant-première';
+    }
+    qNext.disabled = n === 0 || queue.at >= n;
+    qPrev.disabled = queue.at <= 0;
+  }
+  qForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var parts = qInput.value.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+    if (!parts.length) return;
+    queue.names = queue.names.concat(parts).slice(0, 12);
+    save('plateau', queue); qInput.value = ''; renderQueue();
+  });
+  qNext.addEventListener('click', function () { queue.at += 1; save('plateau', queue); renderQueue(); });
+  qPrev.addEventListener('click', function () { queue.at -= 1; save('plateau', queue); renderQueue(); });
+
+  /* Avant-première : mains levées et révélation */
+  function renderVotes() {
+    $('vLower').textContent = votes.lower;
+    $('vOther').textContent = votes.other;
+    var t = votes.lower + votes.other;
+    $('vFill').style.width = (t ? votes.lower / t * 100 : 0) + '%';
+    $('vSum').textContent = t ? votes.lower + ' sur ' + t + ' ont mis une note plus basse après.' : 'Aucune main comptée pour l’instant.';
+  }
+  each(document.querySelectorAll('[data-vote]'), function (b) {
+    b.addEventListener('click', function () {
+      var key = b.getAttribute('data-vote'), d = parseInt(b.getAttribute('data-delta'), 10);
+      votes[key] = Math.max(0, votes[key] + d); save('mains', votes); renderVotes();
+    });
+  });
+  var revealBtn = $('revealBtn'), reveal = $('reveal');
+  revealBtn.addEventListener('click', function () {
+    reveal.hidden = !reveal.hidden;
+    revealBtn.setAttribute('aria-expanded', String(!reveal.hidden));
+    revealBtn.textContent = reveal.hidden ? 'Ce que disent les chercheurs' : 'Masquer';
+  });
+
+  /* Générique de fin */
+  var roll = $('roll');
+  function rollCredits() {
+    roll.textContent = '';
+    function line(cls, text) { var p = document.createElement('p'); p.className = cls; p.textContent = text; roll.appendChild(p); }
+    line('c-title', 'Metflix');
+    line('c-season', 'Saison 1');
+    line('c-role', 'Une série écrite et jouée par');
+    (queue.names.length ? queue.names : ['les héros du jour']).forEach(function (n) { line('c-name', n); });
+    line('c-role', 'Scénaristes');
+    line('c-name', 'Tout le groupe');
+    line('c-role', 'Réalisation');
+    line('c-name', 'La Digital Factory');
+    line('c-end', 'Bravo à toute la distribution.');
+    roll.style.animation = 'none';
+    void roll.offsetWidth;
+    roll.style.animation = '';
+  }
+  $('replay').addEventListener('click', rollCredits);
+  var wipeBtn = $('wipe'), wipeConfirm = $('wipeConfirm'), wipeDone = $('wipeDone');
+  wipeBtn.addEventListener('click', function () { wipeDone.hidden = true; wipeConfirm.hidden = false; wipeBtn.hidden = true; $('wipeYes').focus(); });
+  $('wipeNo').addEventListener('click', function () { wipeConfirm.hidden = true; wipeBtn.hidden = false; wipeBtn.focus(); });
+  $('wipeYes').addEventListener('click', function () {
+    ['mots', 'participants', 'plateau', 'mains'].forEach(drop);
+    words = []; count = 12; queue = { names: [], at: 0 }; votes = { lower: 0, other: 0 };
+    renderWords(); renderGroups(); renderQueue(); renderVotes(); rollCredits();
+    wipeConfirm.hidden = true; wipeBtn.hidden = false; wipeDone.hidden = false; wipeBtn.focus();
+  });
+
+  /* Navigation entre les écrans */
+  var screens = Array.prototype.slice.call(document.querySelectorAll('.screen'));
+  var chapterBtns = Array.prototype.slice.call(document.querySelectorAll('[data-goto-chapter]'));
+  var prevBtn = $('prev'), nextBtn = $('next');
+  var current = parseInt(load('ecran', 0), 10);
+  if (!(current >= 0 && current < screens.length)) current = 0;
+  function show(i) {
+    current = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach(function (s, j) { s.hidden = j !== current; });
+    var sc = screens[current], ch = sc.getAttribute('data-chapter');
+    chapterBtns.forEach(function (b) { b.setAttribute('aria-current', b.getAttribute('data-goto-chapter') === ch ? 'true' : 'false'); });
+    $('pos').textContent = (current + 1) + ' / ' + screens.length;
+    $('chapterLabel').textContent = sc.getAttribute('data-label') || '';
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === screens.length - 1;
+    save('ecran', current);
+    if (sc.id === 's-credits') rollCredits();
+  }
+  prevBtn.addEventListener('click', function () { show(current - 1); });
+  nextBtn.addEventListener('click', function () { show(current + 1); });
+  chapterBtns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var ch = b.getAttribute('data-goto-chapter');
+      for (var i = 0; i < screens.length; i++) { if (screens[i].getAttribute('data-chapter') === ch) { show(i); break; } }
+    });
+  });
+
+  /* Écran noir, plein écran, écran allumé */
+  var blackout = $('blackout');
+  function setBlack(on) { blackout.hidden = !on; if (on) $('unblack').focus(); else $('black').focus(); }
+  $('black').addEventListener('click', function () { setBlack(true); });
+  blackout.addEventListener('click', function () { setBlack(false); });
+  var fsLabel = $('fsLabel');
+  $('fs').addEventListener('click', function () {
+    try {
+      if (!document.fullscreenElement) {
+        var p = document.documentElement.requestFullscreen();
+        if (p && p.catch) p.catch(function () { fsLabel.textContent = 'Plein écran indisponible'; });
+      } else { document.exitFullscreen(); }
+    } catch (e) { fsLabel.textContent = 'Plein écran indisponible'; }
+  });
+  document.addEventListener('fullscreenchange', function () {
+    fsLabel.textContent = document.fullscreenElement ? 'Quitter le plein écran' : 'Plein écran';
+    setTimeout(fit, 60);
+  });
+  var wake = null;
+  function keepAwake() {
+    try {
+      if (!wake && 'wakeLock' in navigator && document.visibilityState === 'visible') {
+        navigator.wakeLock.request('screen').then(function (l) { wake = l; l.addEventListener('release', function () { wake = null; }); }).catch(function () {});
+      }
+    } catch (e) {}
+  }
+  document.addEventListener('pointerdown', keepAwake);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') keepAwake(); });
+
+  /* Clavier et télécommande de présentation */
+  document.addEventListener('keydown', function (e) {
+    keepAwake();
+    var t = e.target, tag = t && t.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || (t && t.isContentEditable)) return;
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    if (!blackout.hidden) { setBlack(false); e.preventDefault(); return; }
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown') { show(current + 1); e.preventDefault(); }
+    else if (k === 'ArrowLeft' || k === 'PageUp') { show(current - 1); e.preventDefault(); }
+    else if (k === 'Home') { show(0); e.preventDefault(); }
+    else if (k === 'End') { show(screens.length - 1); e.preventDefault(); }
+    else if (k === 'b' || k === 'B' || k === '.') { setBlack(true); e.preventDefault(); }
+    else if (k === ' ' && tag !== 'BUTTON') { show(current + 1); e.preventDefault(); }
+  });
+
+  renderWords(); renderGroups(); renderQueue(); renderVotes();
+  show(current);
+})();
+</script>
+
+
+</body></html>
