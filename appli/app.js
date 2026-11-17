@@ -1,5 +1,5 @@
 import {downloadWord} from './word.mjs';
-import {transferPanel,sendScript,joinSession,incomingSession,updateSessionButton} from './transfert.mjs';
+import {transferPanel,sendScript,joinSession,incomingSession,updateSessionButton} from './transfert.mjs?v=20261117-2';
 import {CARDS} from './cards.js';
 import {person,drawTwo,offer,remove,remaining,textFor} from './core.mjs';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

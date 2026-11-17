@@ -1,4 +1,4 @@
-import {api,esc} from './transfert.mjs';
+import {api,esc} from './transfert.mjs?v=20261117-2';
 import {downloadWord,wordBytes,zip,filename,downloadBytes} from './word.mjs';
 const KEY='metflix-host-v1',$=s=>document.querySelector(s);let session=null,texts=[],loading=false,signature='',expired=false;
 try{session=JSON.parse(localStorage.getItem(KEY));if(!session?.host||!session?.code)session=null;}catch{}
