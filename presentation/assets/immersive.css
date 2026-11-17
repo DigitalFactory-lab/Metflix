@@ -58,7 +58,7 @@
 .hero .story-title { font-size:82px; }
 .hero .lead.big { font-size:30px; max-width:720px; }
 .hero-scene { position:absolute; inset:0; z-index:-1; pointer-events:none; }
-.hero-panorama { position:absolute; inset:-35px -125px; background:url(station-hero.webp) center/cover no-repeat; animation:station-travelling 24s linear infinite alternate; will-change:transform; }
+.hero-panorama { position:absolute; inset:-35px -125px; background:url(../../assets/hero-cinema.webp) center/cover no-repeat; animation:station-travelling 24s linear infinite alternate; will-change:transform; }
 .hero-scene::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,rgba(5,9,15,.64),rgba(5,9,15,.26) 46%,rgba(5,9,15,.02)),linear-gradient(0deg,rgba(5,9,15,.86),transparent 55%); }
 @keyframes station-travelling { from { transform:translateX(-110px); } to { transform:translateX(110px); } }
 .screen[hidden] .hero-panorama { animation-play-state:paused; }
